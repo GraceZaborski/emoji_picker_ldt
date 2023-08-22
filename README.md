@@ -9,3 +9,4 @@ Todo:
 - create renderWithProvider wrapper for unit tests
 - fix axios mock
 - use api as suggested
+- write tests to avoid act errors

@@ -31,6 +31,7 @@ describe.only("FancyInput", () => {
       ).toBeInTheDocument();
     });
 
+    // TODO: improve this test
     it("closes popover when user inputs space", async () => {
       render(<FancyInput placeholder={"Please make me fancy 🤩"} />);
       const input = screen.getByPlaceholderText("Please make me fancy 🤩");
@@ -45,6 +46,17 @@ describe.only("FancyInput", () => {
       expect(
         screen.queryByRole("option", { name: "😀 :grinning_face:" })
       ).not.toBeInTheDocument();
+    });
+
+    it("filters the emojis based on search string", async () => {
+      render(<FancyInput placeholder={"Please make me fancy 🤩"} />);
+      const input = screen.getByPlaceholderText("Please make me fancy 🤩");
+      userEvent.type(input, ":grinning");
+      const options = await screen.findAllByRole("option");
+      expect(options).toHaveLength(7);
+      await userEvent.type(input, ":grinning_cat");
+      const options2 = await screen.findAllByRole("option");
+      expect(options2).toHaveLength(2);
     });
   });
 });

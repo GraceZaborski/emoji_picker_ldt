@@ -10,6 +10,7 @@ function FancyInput({ placeholder }) {
   const [error, setError] = useState(false);
   const [inputValue, setInpuValue] = useState("");
   const [openPopover, setOpenPopover] = useState(false);
+  const [emojiSearchString, setEmojiSearchString] = useState("");
 
   const getEmojis = () => {
     try {
@@ -32,7 +33,7 @@ function FancyInput({ placeholder }) {
   }, []);
 
   useEffect(() => {
-    if (inputValue.slice(inputValue.length - 1 === "")) {
+    if (inputValue.slice(inputValue.length - 1) === " ") {
       setOpenPopover(false);
     }
     // check whether should open popover
@@ -42,7 +43,13 @@ function FancyInput({ placeholder }) {
     if (shouldOpenPopover) {
       setOpenPopover(true);
     }
-  }, [inputValue]);
+
+    if (openPopover) {
+      const startStringIndex = inputValue.lastIndexOf(":");
+      const emojiSearchString = inputValue.slice(startStringIndex);
+      setEmojiSearchString(emojiSearchString);
+    }
+  }, [inputValue, openPopover]);
 
   return (
     <Popover
@@ -53,7 +60,9 @@ function FancyInput({ placeholder }) {
           <p>Error loading data</p>
         ) : (
           <StatefulMenu
-            items={emojis}
+            items={emojis.filter((elem) =>
+              elem.label.includes(emojiSearchString)
+            )}
             overrides={{
               List: {
                 style: {
