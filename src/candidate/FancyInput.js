@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Input } from "baseui/input";
-import { StatefulPopover } from "baseui/popover";
+import { Popover } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { useEffect, useState } from "react";
 import { transformEmojiData } from "./transformers/tranformEmojiData";
@@ -8,6 +8,8 @@ import { transformEmojiData } from "./transformers/tranformEmojiData";
 function FancyInput({ placeholder }) {
   const [emojis, setEmojis] = useState([]);
   const [error, setError] = useState(false);
+  const [inputValue, setInpuValue] = useState("");
+  const [openPopover, setOpenPopover] = useState(false);
 
   const getEmojis = () => {
     try {
@@ -16,7 +18,6 @@ function FancyInput({ placeholder }) {
           "https://emoji-api.com/emojis?access_key=a9a622e3fe06b4a9baf78876300e42f7bbfa3d74"
         )
         .then(({ data }) => {
-          console.log(data);
           const transformedData = transformEmojiData(data);
           setEmojis(transformedData);
         });
@@ -30,10 +31,23 @@ function FancyInput({ placeholder }) {
     getEmojis();
   }, []);
 
+  useEffect(() => {
+    if (inputValue.slice(inputValue.length - 1 === "")) {
+      setOpenPopover(false);
+    }
+    // check whether should open popover
+    const regex = new RegExp(/:../);
+    const latestInput = inputValue.slice(inputValue.length - 3);
+    const shouldOpenPopover = latestInput.match(regex);
+    if (shouldOpenPopover) {
+      setOpenPopover(true);
+    }
+  }, [inputValue]);
+
   return (
-    <StatefulPopover
+    <Popover
       placement="top"
-      isOpen={true}
+      isOpen={openPopover}
       content={
         error ? (
           <p>Error loading data</p>
@@ -53,9 +67,13 @@ function FancyInput({ placeholder }) {
       }
     >
       <span>
-        <Input placeholder={placeholder} />
+        <Input
+          placeholder={placeholder}
+          value={inputValue}
+          onChange={(e) => setInpuValue(e.target.value)}
+        />
       </span>
-    </StatefulPopover>
+    </Popover>
   );
 }
 
