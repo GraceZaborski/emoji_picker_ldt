@@ -4,7 +4,7 @@ import { FancyInput } from "./FancyInput";
 import { emojiDataMock } from "./mocks";
 import userEvent from "@testing-library/user-event";
 
-describe.only("FancyInput", () => {
+describe("FancyInput", () => {
   describe("Data success scenarios", () => {
     // beforeEach(async () => {
     //   jest.mock("axios");
