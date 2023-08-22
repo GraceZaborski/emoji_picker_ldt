@@ -51,6 +51,13 @@ function FancyInput({ placeholder }) {
     }
   }, [inputValue, openPopover]);
 
+  const handleItemSelection = (label) => {
+    setOpenPopover(false);
+    const emoji = label.slice(0, 2);
+    const newInputValue = inputValue.replace(emojiSearchString, emoji);
+    setInpuValue(newInputValue);
+  };
+
   return (
     <Popover
       placement="top"
@@ -63,6 +70,7 @@ function FancyInput({ placeholder }) {
             items={emojis.filter((elem) =>
               elem.label.includes(emojiSearchString)
             )}
+            onItemSelect={({ item }) => handleItemSelection(item.label)}
             overrides={{
               List: {
                 style: {

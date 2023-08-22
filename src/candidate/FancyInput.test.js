@@ -58,6 +58,22 @@ describe.only("FancyInput", () => {
       const options2 = await screen.findAllByRole("option");
       expect(options2).toHaveLength(2);
     });
+
+    it("replaces emoji search string with emoji when chosen", async () => {
+      render(<FancyInput placeholder={"Please make me fancy 🤩"} />);
+      const input = screen.getByPlaceholderText("Please make me fancy 🤩");
+      userEvent.type(input, ":grinning_cat");
+      const chosenOption = await screen.findByRole("option", {
+        name: "😺 :grinning_cat:",
+      });
+      await userEvent.click(chosenOption);
+      await waitFor(() => {
+        expect(
+          screen.queryByRole("option", { name: "😺 :grinning_cat:" })
+        ).not.toBeInTheDocument();
+      });
+      expect(input).toHaveValue("😺");
+    });
   });
 });
 

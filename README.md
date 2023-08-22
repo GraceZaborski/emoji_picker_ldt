@@ -10,3 +10,5 @@ Todo:
 - fix axios mock
 - use api as suggested
 - write tests to avoid act errors
+- keep focus on input
+- accessibility audit
